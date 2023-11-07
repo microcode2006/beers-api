@@ -14,7 +14,7 @@ using OneOf;
 
 namespace Vintri.Beers.Infrastructure
 {
-    public class PunkClient : IPunkClient
+    internal class PunkClient : IPunkClient
     {
         private readonly HttpClient _httpClient;
         private readonly PunkClientSettings _punkClientSettings;

@@ -2,6 +2,9 @@
 
 namespace Vintri.Beers.Core.Models
 {
+    /// <summary>
+    /// Response model for the data returned from GetBeersAsync action
+    /// </summary>
     public class BeerRatingsResponse
     {
         public int Id { get; set; }

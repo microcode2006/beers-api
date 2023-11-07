@@ -1,15 +1,20 @@
 using System.Web.Http;
-using Microsoft.Web.Http;
 using WebActivatorEx;
 using Swashbuckle.Application;
 using Vintri.Beers.Api;
 
-[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
+[assembly: PreApplicationStartMethod(typeof(SwaggerConfig), nameof(SwaggerConfig.Register))]
 
 namespace Vintri.Beers.Api
 {
+    /// <summary>
+    /// Configure Swagger
+    /// </summary>
     public class SwaggerConfig
     {
+        /// <summary>
+        /// Enable Swagger with UI and XML comments
+        /// </summary>
         public static void Register()
         {
             var thisAssembly = typeof(SwaggerConfig).Assembly;
@@ -17,16 +22,13 @@ namespace Vintri.Beers.Api
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
                 {
-                    c.SingleApiVersion(ApiVersion.Default.MajorVersion.ToString(), "Vintri Beers API");
+                    c.SingleApiVersion("v1", "Vintri Beers API");
                     c.UseFullTypeNameInSchemaIds();
                     c.IncludeXmlComments(GetXmlCommentsPath());
                 })
                 .EnableSwaggerUi();
         }
 
-        private static string GetXmlCommentsPath()
-        {
-            return string.Format(@"{0}\bin\Vintri.Beers.Api.XML", System.AppDomain.CurrentDomain.BaseDirectory);
-        }
+        private static string GetXmlCommentsPath() => $@"{System.AppDomain.CurrentDomain.BaseDirectory}\bin\Vintri.Beers.Api.XML";
     }
 }

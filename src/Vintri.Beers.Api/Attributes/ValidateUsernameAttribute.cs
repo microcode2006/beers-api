@@ -1,29 +1,32 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Vintri.Beers.Core.Extensions;
 using Vintri.Beers.Core.Models;
 
 namespace Vintri.Beers.Api.Attributes
 {
-    /// <summary>
-    /// Here's the username validation only, other validation is done through separate fluent validation.
-    /// </summary>
+    /// <inheritdoc />
     public class ValidateUsernameAttribute : ActionFilterAttribute
     {
+        /// <summary>
+        /// Here's the username validation only, other validation is done through separate validators with fluent validation.
+        /// Its probably better to have all model validations in separate validators consumed by service class as part of business logic.
+        /// Its also easier for unit test without http action context etc.
+        /// </summary>
         public override void OnActionExecuting(HttpActionContext actionContext)
         {
             if (actionContext.ActionArguments.TryGetValue("userRating", out var argument))
             {
                 if (argument is UserRating userRating && !IsValidEmail(userRating.Username))
                 {
-                    actionContext.Response = actionContext.Request.CreateResponse(
+                    actionContext.Response = actionContext.Request.CreateErrorResult(
                         HttpStatusCode.BadRequest, $"Please specify a valid email for {nameof(userRating.Username)}");
                 }
             }
         }
 
-        private static bool IsValidEmail(string email) => Regex.IsMatch(email ?? string.Empty, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+        private static bool IsValidEmail(string? email) => Regex.IsMatch(email ?? string.Empty, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
     }
 }

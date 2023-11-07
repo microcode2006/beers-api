@@ -4,26 +4,23 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Dispatcher;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Polly;
-using Polly.Extensions.Http;
 using Vintri.Beers.Api.Controllers;
-using Vintri.Beers.Core;
 using Vintri.Beers.Core.Extensions;
-using Vintri.Beers.Core.Services;
-using Vintri.Beers.Core.Interfaces;
 using Vintri.Beers.Core.Models;
-using Vintri.Beers.Core.Validators;
-using Vintri.Beers.Infrastructure;
-using Vintri.Beers.Infrastructure.Repositories;
+using Vintri.Beers.Infrastructure.Extensions;
 
 namespace Vintri.Beers.Api
 {
+    /// <summary>
+    /// Configure Microsoft DI in ASP.NET 4.6.1 and up:
+    /// https://stackoverflow.com/questions/68861721/integrating-microsoft-extensions-dependencyinjection-in-asp-net-4-6-1-project
+    /// </summary>
     public static class IocConfig
     {
-        /// Here's how to configure Microsoft DI in ASP.NET 4.6.1 and up:
-        /// https://stackoverflow.com/questions/68861721/integrating-microsoft-extensions-dependencyinjection-in-asp-net-4-6-1-project
+        /// <summary>
+        /// Configure Microsoft DI and register types
+        /// </summary>
         public static void Register()
         {
             var serviceCollection = new ServiceCollection();
@@ -38,23 +35,12 @@ namespace Vintri.Beers.Api
                 .Configure(opts => opts.Endpoint = ConfigurationManager.AppSettings["PunkApiEndpoint"])
                 .Validate(opts => !string.IsNullOrWhiteSpace(opts.Endpoint));
 
-            serviceCollection.AddHttpClient<IPunkClient, PunkClient>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(Constants.PunkClientLifetimeInMinutes))
-                .AddPolicyHandler(GetRetryPolicy());
-
             serviceCollection.AddValidators();
-
-            serviceCollection.AddScoped<IUserRatingRepository, UserRatingRepository>();
-            serviceCollection.AddScoped<IBeersService, BeersService>();
-
+            serviceCollection.AddPunkClient();
+            serviceCollection.AddUserRatingRepository();
+            serviceCollection.AddBeersService();
             serviceCollection.AddScoped<BeersController>();
         }
-
-        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy() =>
-            HttpPolicyExtensions.HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-                .WaitAndRetryAsync(Constants.PunkClientMaxRetryCount,
-                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(Constants.PunkClientBackoffBase, retryAttempt)));
 
         private static void Configure(IServiceCollection serviceCollection)
         {

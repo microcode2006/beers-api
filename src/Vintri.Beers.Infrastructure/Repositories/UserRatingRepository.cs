@@ -13,7 +13,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
     /// <summary>
     /// Json file repository for user ratings, use System.Text.Json library for async and performant operations
     /// </summary>
-    public class UserRatingRepository : IUserRatingRepository
+    internal class UserRatingRepository : IUserRatingRepository
     {
         private static readonly string DatabaseFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App_Data", "database.json");
 
@@ -42,6 +42,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
         private async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)
         {
             using var json = File.OpenRead(DatabaseFile);
+
             if (json.Length == 0)
             {
                 return new List<BeerRatings>();

@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using FluentValidation.Validators;
 using Vintri.Beers.Core.Models;
 
 namespace Vintri.Beers.Core.Validators;

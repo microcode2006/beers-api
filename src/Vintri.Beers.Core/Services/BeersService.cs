@@ -8,7 +8,7 @@ using Vintri.Beers.Core.Models;
 
 namespace Vintri.Beers.Core.Services
 {
-    public class BeersService : IBeersService
+    internal class BeersService : IBeersService
     {
         private readonly IUserRatingRepository _userRatingRepository;
         private readonly IPunkClient _punkClient;
@@ -24,6 +24,7 @@ namespace Vintri.Beers.Core.Services
             _queryFilterValidator = queryFilterValidator;
         }
 
+        // We may return better paging results following json:api specification: https://jsonapi.org/
         public async Task<IReadOnlyList<BeerRatingsResponse>> GetBeersAsync(QueryFilter queryFilter, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
