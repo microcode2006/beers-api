@@ -1,0 +1,9 @@
+global using Xunit;
+global using System.Net;
+global using System.Web.Http;
+global using AutoFixture;
+global using NSubstitute;
+global using Shouldly;
+global using Vintri.Beers.Api.Controllers;
+global using Vintri.Beers.Core.Interfaces;
+global using Vintri.Beers.Core.Models;
