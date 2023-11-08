@@ -2,7 +2,7 @@ namespace Vintri.Beers.Core.Tests.Validators;
 
 public class UserRatingValidatorTests
 {
-    private readonly UserRatingValidator _validator = new();
+    private readonly UserRatingValidator _userRatingValidator = new();
     private readonly Fixture _fixture = new();
 
     [Theory]
@@ -15,7 +15,7 @@ public class UserRatingValidatorTests
         {
             Username = userName
         };
-        var result = _validator.TestValidate(userRating);
+        var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldHaveValidationErrorFor(userRating => userRating.Username);
     }
 
@@ -29,7 +29,7 @@ public class UserRatingValidatorTests
         {
             Rating = rating
         };
-        var result = _validator.TestValidate(userRating);
+        var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldHaveValidationErrorFor(userRating => userRating.Rating);
     }
 
@@ -45,7 +45,7 @@ public class UserRatingValidatorTests
         {
             Rating = rating
         };
-        var result = _validator.TestValidate(userRating);
+        var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldNotHaveValidationErrorFor(userRating => userRating.Rating);
     }
 
@@ -59,7 +59,7 @@ public class UserRatingValidatorTests
         {
             Comments = comments
         };
-        var result = _validator.TestValidate(userRating);
+        var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldNotHaveValidationErrorFor(userRating => userRating.Comments);
     }
 
@@ -84,7 +84,7 @@ public class UserRatingValidatorTests
         {
             Comments = new string(chars)
         };
-        var result = _validator.TestValidate(userRating);
+        var result = _userRatingValidator.TestValidate(userRating);
 
         assertion(result);
     }

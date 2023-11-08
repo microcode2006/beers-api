@@ -17,18 +17,16 @@ namespace Vintri.Beers.Api
         /// </summary>
         public static void Register()
         {
-            var thisAssembly = typeof(SwaggerConfig).Assembly;
+            var xmlCommentsFilePath = $@"{System.AppDomain.CurrentDomain.BaseDirectory}\bin\Vintri.Beers.Api.XML";
 
             GlobalConfiguration.Configuration
                 .EnableSwagger(c =>
                 {
                     c.SingleApiVersion("v1", "Vintri Beers API");
                     c.UseFullTypeNameInSchemaIds();
-                    c.IncludeXmlComments(GetXmlCommentsPath());
+                    c.IncludeXmlComments(xmlCommentsFilePath);
                 })
                 .EnableSwaggerUi();
         }
-
-        private static string GetXmlCommentsPath() => $@"{System.AppDomain.CurrentDomain.BaseDirectory}\bin\Vintri.Beers.Api.XML";
     }
 }

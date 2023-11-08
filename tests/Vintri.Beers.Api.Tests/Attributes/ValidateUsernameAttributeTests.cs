@@ -1,12 +1,13 @@
 using System.Web.Http.Controllers;
 using System.Web.Http.Hosting;
 using Vintri.Beers.Api.Attributes;
+using Vintri.Beers.Core.Exceptions;
 
 namespace Vintri.Beers.Api.Tests.Attributes;
 
 public class ValidateUsernameAttributeTests
 {
-    private readonly ValidateUsernameAttribute _attribute = new();
+    private readonly ValidateUsernameAttribute _validateUsernameAttribute = new();
 
     [Theory]
     [InlineData("")]
@@ -18,7 +19,7 @@ public class ValidateUsernameAttributeTests
     [InlineData("@.com")]
     [InlineData("username @test.com")]
     [InlineData("username@test.com", false)]
-    public void OnActionExecuting_Should_Return_BadRequest_When_InvalidEmail(string username, bool isBadRequest = true)
+    public void OnActionExecuting_Should_Throw_Exception_Only_When_InvalidEmail(string username, bool shouldThrow = true)
     {
         var actionContext = new HttpActionContext
         {
@@ -27,16 +28,14 @@ public class ValidateUsernameAttributeTests
                 Configuration = new HttpConfiguration(),
                 Request = new HttpRequestMessage()
             },
-            ActionArguments = { ["userRating"] = new UserRating { Username = username }},
+            ActionArguments = { ["userRating"] = new UserRating { Username = username } },
             ActionDescriptor = Substitute.For<HttpActionDescriptor>()
         };
         actionContext.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());
 
-        _attribute.OnActionExecuting(actionContext);
-
-        if (isBadRequest)
+        if (shouldThrow)
         {
-            actionContext.Response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            Should.Throw<InvalidUsernameException>(() => _validateUsernameAttribute.OnActionExecuting(actionContext));
         }
     }
 }

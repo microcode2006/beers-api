@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Vintri.Beers.Core.Interfaces;
 using Vintri.Beers.Core.Models;
 using OneOf;
+using Vintri.Beers.Core.Exceptions;
 
 namespace Vintri.Beers.Infrastructure
 {
@@ -25,13 +26,13 @@ namespace Vintri.Beers.Infrastructure
             _punkClientSettings = punkClientSettings.Value;
         }
 
+        //Use OneOf to support union types: int for beer Id and QueryFilter for query parameters like beer name and paging.
         public async Task<IReadOnlyList<Beer>> GetBeersAsync(OneOf<int, QueryFilter> queryOption, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var requestUri = queryOption.IsT0 ?
-                $"{_punkClientSettings.Endpoint}/{queryOption.AsT0.ToString()}" :
-                $"{_punkClientSettings.Endpoint}?{GetQueryString(queryOption.AsT1)}";
+            var uriParams = queryOption.Match(beerId => $"/{beerId.ToString()}", queryFilter => $"?{GetQueryString(queryFilter)}");
+            var requestUri = $"{_punkClientSettings.Endpoint}{uriParams}";
 
             var response = await _httpClient.GetAsync(requestUri , cancellationToken).ConfigureAwait(false);
             var beers = await GetBeersFromResponseAsync(response).ConfigureAwait(false);
@@ -59,7 +60,7 @@ namespace Vintri.Beers.Infrastructure
                 case HttpStatusCode.NotFound:
                     return Array.Empty<Beer>();
                 default:
-                    throw new HttpRequestException(response.ReasonPhrase);
+                    throw new PunkRequestException(response);
             }
         }
     }

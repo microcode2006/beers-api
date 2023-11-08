@@ -12,7 +12,6 @@ public class UserRatingValidator : AbstractValidator<UserRating>
             .WithMessage("Please specify a valid email address");
 
         RuleFor(x => x.Rating)
-            .NotEmpty()
             .InclusiveBetween(1, 5)
             .WithMessage("Please specify a valid rating from 1 to 5");
 

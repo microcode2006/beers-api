@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Vintri.Beers.Core.Exceptions;
 using Vintri.Beers.Core.Extensions;
 using Vintri.Beers.Core.Models;
 
@@ -21,12 +22,14 @@ namespace Vintri.Beers.Api.Attributes
             {
                 if (argument is UserRating userRating && !IsValidEmail(userRating.Username))
                 {
-                    actionContext.Response = actionContext.Request.CreateErrorResult(
-                        HttpStatusCode.BadRequest, $"Please specify a valid email for {nameof(userRating.Username)}");
+                    throw new InvalidUsernameException($"Invalid email for {nameof(userRating.Username)}");
                 }
             }
+
+            return;
+
+            bool IsValidEmail(string? email) => Regex.IsMatch(email ?? string.Empty, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
         }
 
-        private static bool IsValidEmail(string? email) => Regex.IsMatch(email ?? string.Empty, @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
     }
 }

@@ -205,10 +205,10 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="App_Start\FilterConfig.cs" />
         <Compile Include="App_Start\IocConfig.cs" />
         <Compile Include="App_Start\SwaggerConfig.cs" />
         <Compile Include="App_Start\WebApiConfig.cs" />
+        <Compile Include="Attributes\ExceptionHandlingAttribute.cs" />
         <Compile Include="Attributes\ValidateUsernameAttribute.cs" />
         <Compile Include="Controllers\BeersController.cs" />
         <Compile Include="Global.asax.cs">

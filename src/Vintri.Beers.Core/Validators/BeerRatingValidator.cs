@@ -14,7 +14,6 @@ public class BeerRatingValidator : AbstractValidator<BeerRating>
         RuleFor(x => x.UserRating).SetValidator(new UserRatingValidator()!);
 
         RuleFor(x => x.BeerId)
-            .NotEmpty()
             .GreaterThan(0)
             .MustAsync(
                 async(beerId, cancellationToken) =>

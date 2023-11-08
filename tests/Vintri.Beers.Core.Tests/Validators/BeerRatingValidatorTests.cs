@@ -3,11 +3,11 @@ namespace Vintri.Beers.Core.Tests.Validators;
 public class BeerRatingValidatorTests
 {
     private readonly IPunkClient _mockedPunkClient = Substitute.For<IPunkClient>();
-    private readonly BeerRatingValidator _validator;
+    private readonly BeerRatingValidator _beerRatingValidator;
 
     public BeerRatingValidatorTests()
     {
-        _validator = new BeerRatingValidator(_mockedPunkClient);
+        _beerRatingValidator = new BeerRatingValidator(_mockedPunkClient);
     }
 
     [Theory]
@@ -20,7 +20,7 @@ public class BeerRatingValidatorTests
             BeerId = beerId
         };
 
-        var result = await _validator.TestValidateAsync(beerRating);
+        var result = await _beerRatingValidator.TestValidateAsync(beerRating);
         result.ShouldHaveValidationErrorFor(beerRating => beerRating.BeerId);
     }
 
@@ -33,7 +33,7 @@ public class BeerRatingValidatorTests
 
         SetBeerMocks(beers, existingBeerId);
 
-        var validationResult = await _validator.TestValidateAsync(beerRatingUnderTest);
+        var validationResult = await _beerRatingValidator.TestValidateAsync(beerRatingUnderTest);
         validationResult.ShouldNotHaveValidationErrorFor(beerRating => beerRating.BeerId);
     }
 
@@ -45,7 +45,7 @@ public class BeerRatingValidatorTests
 
         SetBeerMocks(emptyBeerList);
 
-        var validationResult = await _validator.TestValidateAsync(beerRatingUnderTest);
+        var validationResult = await _beerRatingValidator.TestValidateAsync(beerRatingUnderTest);
         validationResult.ShouldHaveValidationErrorFor(beerRating => beerRating.BeerId);
     }
 
