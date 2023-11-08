@@ -3,14 +3,14 @@ namespace Vintri.Beers.Core.Tests.Services;
 public class BeersServiceTests
 {
     private readonly BeersService _beersService;
-    private readonly IUserRatingRepository _userRatingRepository = Substitute.For<IUserRatingRepository>();
+    private readonly IBeerRatingRepository _beerRatingRepository = Substitute.For<IBeerRatingRepository>();
     private readonly IPunkClient _punkClient = Substitute.For<IPunkClient>();
     private readonly IValidator<BeerRating> _beerRatingValidator = Substitute.For<IValidator<BeerRating>>();
     private readonly IValidator<QueryFilter> _queryFilterValidator = Substitute.For<IValidator<QueryFilter>>();
 
     public BeersServiceTests()
     {
-        _beersService = new BeersService(_userRatingRepository, _punkClient, _beerRatingValidator, _queryFilterValidator);
+        _beersService = new BeersService(_beerRatingRepository, _punkClient, _beerRatingValidator, _queryFilterValidator);
     }
 
     [Fact]
@@ -20,7 +20,7 @@ public class BeersServiceTests
         await _beersService.AddRatingAsync(beerRating, default);
 
         beerRating.ShouldSatisfyAllConditions(
-            rating => _userRatingRepository.Received(1).AddAsync(rating, default),
+            rating => _beerRatingRepository.Received(1).AddAsync(rating, default),
             rating => _beerRatingValidator.Received(1).ValidateAndThrowAsync(rating)
         );
     }
@@ -104,7 +104,7 @@ public class BeersServiceTests
         var queryFilter = new QueryFilter();
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _userRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1) && x.Contains(2)), default)
+        _beerRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1) && x.Contains(2)), default)
             .Returns(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(queryFilter, default);
@@ -157,7 +157,7 @@ public class BeersServiceTests
         };
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _userRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1)), default)
+        _beerRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1)), default)
             .Returns(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(default!, default);
@@ -173,7 +173,7 @@ public class BeersServiceTests
         var beerRatings = new List<BeerRatings>();
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _userRatingRepository.GetAsync(default!, default)
+        _beerRatingRepository.GetAsync(default!, default)
             .ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(default!, default);

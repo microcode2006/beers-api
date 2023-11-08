@@ -10,16 +10,16 @@ namespace Vintri.Beers.Core.Services
 {
     internal class BeersService : IBeersService
     {
-        private readonly IUserRatingRepository _userRatingRepository;
+        private readonly IBeerRatingRepository _beerRatingRepository;
         private readonly IPunkClient _punkClient;
         private readonly IValidator<BeerRating> _beerRatingValidator;
         private readonly IValidator<QueryFilter> _queryFilterValidator;
 
-        public BeersService(IUserRatingRepository userRatingRepository, IPunkClient punkClient,
+        public BeersService(IBeerRatingRepository beerRatingRepository, IPunkClient punkClient,
             IValidator<BeerRating> beerRatingValidator, IValidator<QueryFilter> queryFilterValidator)
         {
-            _userRatingRepository = userRatingRepository;
             _punkClient = punkClient;
+            _beerRatingRepository = beerRatingRepository;
             _beerRatingValidator = beerRatingValidator;
             _queryFilterValidator = queryFilterValidator;
         }
@@ -33,14 +33,14 @@ namespace Vintri.Beers.Core.Services
 
             var beers = await _punkClient.GetBeersAsync(queryFilter, cancellationToken).ConfigureAwait(false);
             var beerIds = beers.Select(x => x.Id).ToList();
-            var beerRatings = await _userRatingRepository.GetAsync(beerIds, cancellationToken).ConfigureAwait(false);
+            var beerRatings = await _beerRatingRepository.GetAsync(beerIds, cancellationToken).ConfigureAwait(false);
 
-            var beerRatingsResponse = beers.Select(x => new BeerRatingsResponse()
+            var beerRatingsResponse = beers.Select(beer => new BeerRatingsResponse()
             {
-                Id = x.Id,
-                Name = x.Name,
-                Description = x.Description,
-                UserRatings = beerRatings.FirstOrDefault(y => y.Id == x.Id)?.UserRatings ?? new List<UserRating>()
+                Id = beer.Id,
+                Name = beer.Name,
+                Description = beer.Description,
+                UserRatings = beerRatings.FirstOrDefault(beerRating => beerRating.Id == beer.Id)?.UserRatings ?? new List<UserRating>()
             }).ToList();
 
             return beerRatingsResponse;
@@ -51,7 +51,7 @@ namespace Vintri.Beers.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             await _beerRatingValidator.ValidateAndThrowAsync(beerRating, cancellationToken).ConfigureAwait(false);
-            await _userRatingRepository.AddAsync(beerRating, cancellationToken).ConfigureAwait(false);
+            await _beerRatingRepository.AddAsync(beerRating, cancellationToken).ConfigureAwait(false);
         }
     }
 }

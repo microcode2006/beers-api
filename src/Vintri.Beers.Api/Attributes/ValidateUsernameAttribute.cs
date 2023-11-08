@@ -1,9 +1,7 @@
-﻿using System.Net;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Vintri.Beers.Core.Exceptions;
-using Vintri.Beers.Core.Extensions;
 using Vintri.Beers.Core.Models;
 
 namespace Vintri.Beers.Api.Attributes

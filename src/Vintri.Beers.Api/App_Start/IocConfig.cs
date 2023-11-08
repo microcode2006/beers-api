@@ -7,6 +7,7 @@ using System.Web.Http.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 using Vintri.Beers.Api.Controllers;
 using Vintri.Beers.Core.Extensions;
+using Vintri.Beers.Core.Interfaces;
 using Vintri.Beers.Core.Models;
 using Vintri.Beers.Infrastructure.Extensions;
 
@@ -18,6 +19,11 @@ namespace Vintri.Beers.Api
     /// </summary>
     public static class IocConfig
     {
+        /// <summary>
+        /// Return the IBeersLogger instance injected by ExceptionHandlingAttribute constructor
+        /// </summary>
+        public static IBeersLogger BeersLogger { get; private set; }
+
         /// <summary>
         /// Configure Microsoft DI and register types
         /// </summary>
@@ -35,11 +41,14 @@ namespace Vintri.Beers.Api
                 .Configure(opts => opts.Endpoint = ConfigurationManager.AppSettings["PunkApiEndpoint"])
                 .Validate(opts => !string.IsNullOrWhiteSpace(opts.Endpoint));
 
+            serviceCollection.AddSerilog();
             serviceCollection.AddValidators();
             serviceCollection.AddPunkClient();
             serviceCollection.AddUserRatingRepository();
             serviceCollection.AddBeersService();
             serviceCollection.AddScoped<BeersController>();
+
+            BeersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
         }
 
         private static void Configure(IServiceCollection serviceCollection)

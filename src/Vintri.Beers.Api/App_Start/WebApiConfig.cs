@@ -13,14 +13,16 @@ namespace Vintri.Beers.Api
     public static class WebApiConfig
     {
         /// <summary>
-        /// Register IoC container, API version and exception handling filter
+        /// Register IoC container, API version, logging and exception handling filter
         /// </summary>
         /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
             IocConfig.Register();
             RegisterApiVersioning(config);
-            config.Filters.Add(new ExceptionHandlingAttribute());
+
+            config.Filters.Add(new ExceptionHandlingAttribute(IocConfig.BeersLogger));
+            config.Filters.Add(new LogRequestAttribute(IocConfig.BeersLogger));
         }
 
         private static void RegisterApiVersioning(HttpConfiguration config)

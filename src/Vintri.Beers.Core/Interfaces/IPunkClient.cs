@@ -7,14 +7,16 @@ using OneOf;
 namespace Vintri.Beers.Core.Interfaces
 {
     /// <summary>
-    ///
+    /// Punk API client
     /// </summary>
     public interface IPunkClient
     {
         /// <summary>
-        ///
+        /// Get beers from Punk API
         /// </summary>
-        /// <returns></returns>
-        Task<IReadOnlyList<Beer>> GetBeersAsync(OneOf<int, QueryFilter> queryOption,CancellationToken cancellationToken);
+        /// <param name="queryOption">Either beer id or beer name with pagination</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>A list of beers</returns>
+        Task<IReadOnlyList<Beer>> GetBeersAsync(OneOf<int, QueryFilter> queryOption, CancellationToken cancellationToken);
     }
 }
