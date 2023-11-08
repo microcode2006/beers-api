@@ -1,13 +1,19 @@
 ## **Clean Architecture**
 
-The code follows Clean Architecture recommended here: https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
+The code follows Clean Architecture recommended here:
+https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
 
 ### Vintri.Beers.Api: 
 This is top layer project should only include controllers, filters, attributes, startup configs etc. Ideally controller action method should be "thin" without too much business logic, all business logic should be included in the "service" classes from Vintri.Beers.Core project.
 All public members should be properly xml commented as its xml docs will be used by Swagger. 
 
 ### Vintri.Beers.Core:
-This is core project should include all business logic classes, interfaces, models, validators etc. There's no dependencies from other projects. The "Services" folder should have all business logic classes which should be named as "xxxService". The "Validators" folder should have all validation classes with [fluent validation](https://docs.fluentvalidation.net/).  
+This is core project should include all business logic classes, interfaces, models, validators etc. There's no dependencies from other projects. 
+
+The "Services" folder should have all business logic classes which should be named as "xxxService",
+and it should be only used by controllers as "orchestrator" to call validator for validation, api client for api calls, repository for data access etc. 
+
+The "Validators" folder should have all validation classes with [fluent validation](https://docs.fluentvalidation.net/).  
 
 ### Vintri.Beers.Infrastructure:
 

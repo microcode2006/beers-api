@@ -5,10 +5,6 @@ namespace Vintri.Beers.Core.Exceptions;
 
 public class PunkRequestException : Exception
 {
-    public HttpResponseMessage Response { get; }
-
-    public PunkRequestException(HttpResponseMessage response) : base($"Punk request failed: {response.ReasonPhrase}")
-    {
-        Response = response;
-    }
+    public PunkRequestException(HttpResponseMessage response) : base(
+        $"Punk request failed with statusCode: {response.StatusCode} reasonPhrase: {response.ReasonPhrase}") {}
 }

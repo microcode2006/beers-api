@@ -42,11 +42,16 @@ namespace Vintri.Beers.Api
                 .Validate(opts => !string.IsNullOrWhiteSpace(opts.Endpoint));
 
             serviceCollection.AddSerilog();
+
             serviceCollection.AddValidators();
             serviceCollection.AddPunkClient();
             serviceCollection.AddUserRatingRepository();
             serviceCollection.AddBeersService();
+
+            serviceCollection.AddHealthChecks();
+
             serviceCollection.AddScoped<BeersController>();
+            serviceCollection.AddScoped<HealthCheckController>();
 
             BeersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
         }

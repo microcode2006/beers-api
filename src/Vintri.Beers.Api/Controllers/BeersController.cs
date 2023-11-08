@@ -35,8 +35,9 @@ namespace Vintri.Beers.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "Returns a list of paged beers that match the beerName query string ", typeof(IReadOnlyList<BeerRatingsResponse>))]
         [SwaggerResponse(HttpStatusCode.BadRequest, "Invalid beer name or paging parameters")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, "Internal errors occurred")]
+        [SwaggerResponse(HttpStatusCode.RequestTimeout, "Request timed out or cancelled")]
         [Route("")]
-        public async Task<IHttpActionResult> GetBeersAsync([FromUri]QueryFilter queryFilter, CancellationToken cancellationToken)
+        public async Task<IHttpActionResult> GetBeersAsync([FromUri]QueryFilter queryFilter, CancellationToken cancellationToken = default)
         {
             var beers = await _beersService.GetBeersAsync(queryFilter, cancellationToken).ConfigureAwait(false);
             return Ok(beers);
@@ -54,8 +55,9 @@ namespace Vintri.Beers.Api.Controllers
         [SwaggerResponse(HttpStatusCode.Created, "The user rating created for beer", typeof(BeerRating))]
         [SwaggerResponse(HttpStatusCode.BadRequest, "Invalid beer id or user rating")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, "Internal errors occurred")]
+        [SwaggerResponse(HttpStatusCode.RequestTimeout, "Request timed out or cancelled")]
         [Route("{beerId}/ratings")]
-        public async Task<IHttpActionResult> AddRatingAsync(int beerId, [FromBody]UserRating userRating, CancellationToken cancellationToken)
+        public async Task<IHttpActionResult> AddRatingAsync(int beerId, [FromBody]UserRating userRating, CancellationToken cancellationToken = default)
         {
             var beerRating = new BeerRating
             {
