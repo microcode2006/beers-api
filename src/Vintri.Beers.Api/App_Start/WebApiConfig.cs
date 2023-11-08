@@ -2,6 +2,7 @@
 using System.Web.Http.Routing;
 using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
+using Newtonsoft.Json.Serialization;
 using Vintri.Beers.Api.Attributes;
 using Vintri.Beers.Core;
 
@@ -23,6 +24,9 @@ namespace Vintri.Beers.Api
 
             config.Filters.Add(new ExceptionHandlingAttribute(IocConfig.BeersLogger));
             config.Filters.Add(new LogRequestAttribute(IocConfig.BeersLogger));
+
+            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
         }
 
         private static void RegisterApiVersioning(HttpConfiguration config)

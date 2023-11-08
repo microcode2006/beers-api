@@ -12,12 +12,10 @@ public class QueryFilterValidator : AbstractValidator<QueryFilter>
             .WithMessage("Please specify beer name.");
 
         RuleFor(x => x.PerPage)
-            .NotEmpty()
             .InclusiveBetween(1, Constants.MaxPerPage)
             .WithMessage("Please specify a valid per page value from 1 to 25");
 
         RuleFor(x => x.Page)
-            .NotEmpty()
             .GreaterThan(0)
             .WithMessage("Please specify a valid page value greater than 0");
     }
