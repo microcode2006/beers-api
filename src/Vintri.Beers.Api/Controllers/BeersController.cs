@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.Web.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using Swashbuckle.Swagger.Annotations;
 using Vintri.Beers.Api.Attributes;
 using Vintri.Beers.Core;
 using Vintri.Beers.Core.Models;
@@ -32,10 +29,6 @@ namespace Vintri.Beers.Api.Controllers
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>A list of paged beers that match the beerName query string</returns>
         [HttpGet]
-        [SwaggerResponse(HttpStatusCode.OK, "Returns a list of paged beers that match the beerName query string ", typeof(IReadOnlyList<BeerRatingsResponse>))]
-        [SwaggerResponse(HttpStatusCode.BadRequest, "Invalid beer name or paging parameters")]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, "Internal errors occurred")]
-        [SwaggerResponse(HttpStatusCode.RequestTimeout, "Request timed out or cancelled")]
         [Route("")]
         public async Task<IHttpActionResult> GetBeersAsync([FromUri]QueryFilter queryFilter, CancellationToken cancellationToken = default)
         {
@@ -52,10 +45,6 @@ namespace Vintri.Beers.Api.Controllers
         /// <returns>The posted user rating with beer id</returns>
         [HttpPost]
         [ValidateUsername]
-        [SwaggerResponse(HttpStatusCode.Created, "The user rating created for beer", typeof(BeerRating))]
-        [SwaggerResponse(HttpStatusCode.BadRequest, "Invalid beer id or user rating")]
-        [SwaggerResponse(HttpStatusCode.InternalServerError, "Internal errors occurred")]
-        [SwaggerResponse(HttpStatusCode.RequestTimeout, "Request timed out or cancelled")]
         [Route("{beerId}/ratings")]
         public async Task<IHttpActionResult> AddRatingAsync(int beerId, [FromBody]UserRating userRating, CancellationToken cancellationToken = default)
         {
