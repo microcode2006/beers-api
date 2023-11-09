@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
 using FluentValidation;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Vintri.Beers.Core.Exceptions;
 using Vintri.Beers.Core.Interfaces;
 using Vintri.Beers.Core.Models;
@@ -33,21 +33,31 @@ public class ExceptionHandlingAttribute : ExceptionFilterAttribute
         _logger.LogException(exception,
             $"An exception occurred from request: {actionExecutedContext.Request.Method} {actionExecutedContext.Request.RequestUri}");
 
-        var statusCode = exception switch
+        var statusCode = GetStatusCode(exception);
+        actionExecutedContext.Response = CreateHttpResponseMessage(exception.Message, statusCode);
+    }
+
+    private HttpStatusCode GetStatusCode(Exception exception) =>
+        exception switch
         {
             ValidationException or InvalidUsernameException => HttpStatusCode.BadRequest,
             TaskCanceledException or OperationCanceledException => HttpStatusCode.RequestTimeout,
             _ => HttpStatusCode.InternalServerError,
         };
 
-        actionExecutedContext.Response = new HttpResponseMessage(statusCode)
+    private HttpResponseMessage CreateHttpResponseMessage(string message, HttpStatusCode statusCode) =>
+        new(statusCode)
         {
-            Content = new StringContent(JsonConvert.SerializeObject(new ErrorResult
+            Content = new StringContent(FormatAsJson(new ErrorResult
             {
-                Message = exception.Message,
+                Message = message,
                 StatusCode = (int)statusCode
-            }), Encoding.UTF8, "application/json")
+            })),
         };
-    }
 
+    private string FormatAsJson(ErrorResult errorResult) =>
+        JsonConvert.SerializeObject(errorResult, Formatting.Indented, new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        });
 }

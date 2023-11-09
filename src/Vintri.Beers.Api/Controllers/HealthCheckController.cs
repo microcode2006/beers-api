@@ -1,17 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using Microsoft.Web.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web.Http;
-using System.Web.Http.Results;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
-using Swashbuckle.Swagger.Annotations;
-using Vintri.Beers.Api.Attributes;
-using Vintri.Beers.Core;
-using Vintri.Beers.Core.Models;
-using Vintri.Beers.Core.Interfaces;
 
 namespace Vintri.Beers.Api.Controllers
 {
@@ -28,7 +17,6 @@ namespace Vintri.Beers.Api.Controllers
             _healthCheckService = healthCheckService;
         }
 
-
         /// <summary>
         /// Health check
         /// </summary>
@@ -38,9 +26,10 @@ namespace Vintri.Beers.Api.Controllers
         public async Task<IHttpActionResult> GetAsync()
         {
             var healthReport = await _healthCheckService.CheckHealthAsync().ConfigureAwait(false);
-            var reportToJson = JsonConvert.SerializeObject(healthReport);
 
-            return healthReport.Status == HealthStatus.Healthy ? Ok(reportToJson) : NotFound();
+            return healthReport.Status == HealthStatus.Healthy
+                ? Ok(healthReport)
+                : NotFound();
         }
 
 

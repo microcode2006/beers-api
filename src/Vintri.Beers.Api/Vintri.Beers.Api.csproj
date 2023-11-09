@@ -234,6 +234,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+        <Content Include="App_Data\database.json" />
         <Content Include="App_Data\logs20231108.txt" />
         <Content Include="Global.asax" />
         <Content Include="Web.config" />
@@ -245,9 +246,6 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="App_Data\database.json">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>

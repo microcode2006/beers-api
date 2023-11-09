@@ -13,7 +13,7 @@ public class QueryFilterValidator : AbstractValidator<QueryFilter>
 
         RuleFor(x => x.PerPage)
             .InclusiveBetween(1, Constants.MaxPerPage)
-            .WithMessage("Please specify a valid per page value from 1 to 25");
+            .WithMessage($"Please specify a valid per page value from 1 to {Constants.MaxPerPage.ToString()}");
 
         RuleFor(x => x.Page)
             .GreaterThan(0)

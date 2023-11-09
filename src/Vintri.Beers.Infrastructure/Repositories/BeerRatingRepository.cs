@@ -41,6 +41,11 @@ namespace Vintri.Beers.Infrastructure.Repositories
 
         private async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)
         {
+            if (!File.Exists(DatabaseFile))
+            {
+                return new List<BeerRatings>();
+            }
+
             using var json = File.OpenRead(DatabaseFile);
 
             if (json.Length == 0)
