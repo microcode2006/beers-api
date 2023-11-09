@@ -73,13 +73,22 @@
             }
           },
           "400": {
-            "description": "Invalid beer name or paging parameters"
+            "description": "Invalid beer name or paging parameters",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           },
           "408": {
-            "description": "Request timed out or cancelled"
+            "description": "Request timed out or cancelled",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           },
           "500": {
-            "description": "Internal errors occurred"
+            "description": "Internal errors occurred",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           }
         }
       }
@@ -133,12 +142,6 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object"
-            }
-          },
           "201": {
             "description": "The user rating created for beer",
             "schema": {
@@ -146,13 +149,22 @@
             }
           },
           "400": {
-            "description": "Invalid beer id or user rating"
+            "description": "Invalid beer id or user rating",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           },
           "408": {
-            "description": "Request timed out or cancelled"
+            "description": "Request timed out or cancelled",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           },
           "500": {
-            "description": "Internal errors occurred"
+            "description": "Internal errors occurred",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.ErrorResult"
+            }
           }
         }
       }
@@ -293,6 +305,18 @@
         },
         "userRating": {
           "$ref": "#/definitions/Vintri.Beers.Core.Models.UserRating"
+        }
+      }
+    },
+    "Vintri.Beers.Core.Models.ErrorResult": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
         }
       }
     }
