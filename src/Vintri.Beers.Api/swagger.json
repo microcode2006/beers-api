@@ -35,14 +35,14 @@
 
           },
           {
-            "name": "queryFilter.beerName",
+            "name": "beerName",
             "in": "query",
             "required": true,
             "type": "string",
             "description": "beer name to search for"
           },
           {
-            "name": "queryFilter.page",
+            "name": "page",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -51,7 +51,7 @@
             "description": "page number"
           },
           {
-            "name": "queryFilter.perPage",
+            "name": "perPage",
             "in": "query",
             "required": false,
             "type": "integer",
