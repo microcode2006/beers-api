@@ -234,9 +234,8 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="App_Data\database.json" />
-        <Content Include="App_Data\logs20231108.txt" />
         <Content Include="Global.asax" />
+        <Content Include="swagger.json" />
         <Content Include="Web.config" />
         <Content Include="Web.Debug.config">
             <DependentUpon>Web.config</DependentUpon>

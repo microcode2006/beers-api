@@ -1,0 +1,300 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "Vintri Beers API"
+  },
+  "host": "localhost:5000",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/v{version}/beers": {
+      "get": {
+        "tags": [
+          "Beers"
+        ],
+        "summary": "Get all beers that match the beerName and paging query string",
+        "operationId": "Beers_GetBeersAsync",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int32",
+            "default": "1",
+            "description": "API version"
+
+          },
+          {
+            "name": "queryFilter.beerName",
+            "in": "query",
+            "required": true,
+            "type": "string",
+            "description": "beer name to search for"
+          },
+          {
+            "name": "queryFilter.page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "description": "page number"
+          },
+          {
+            "name": "queryFilter.perPage",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 25,
+            "description": "number of records per page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of paged beers that match the beerName query string ",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Vintri.Beers.Core.Models.BeerRatingsResponse"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid beer name or paging parameters"
+          },
+          "408": {
+            "description": "Request timed out or cancelled"
+          },
+          "500": {
+            "description": "Internal errors occurred"
+          }
+        }
+      }
+    },
+    "/api/v{version}/beers/{beerId}/ratings": {
+      "post": {
+        "tags": [
+          "Beers"
+        ],
+        "summary": "Add a rating to a beer",
+        "operationId": "Beers_AddRatingAsync",
+        "consumes": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml",
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "beerId",
+            "in": "path",
+            "description": "Beer id rated by user",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "userRating",
+            "in": "body",
+            "description": "User rating details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.UserRating"
+            }
+          },
+          {
+            "name": "version",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int32",
+            "default": "1",
+            "description": "API version"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "201": {
+            "description": "The user rating created for beer",
+            "schema": {
+              "$ref": "#/definitions/Vintri.Beers.Core.Models.BeerRating"
+            }
+          },
+          "400": {
+            "description": "Invalid beer id or user rating"
+          },
+          "408": {
+            "description": "Request timed out or cancelled"
+          },
+          "500": {
+            "description": "Internal errors occurred"
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "HealthCheck"
+        ],
+        "summary": "Health check",
+        "operationId": "HealthCheck_GetAsync",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Vintri.Beers.Core.Models.QueryFilter": {
+      "type": "object",
+      "properties": {
+        "beerName": {
+          "type": "string"
+        },
+        "page": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "perPage": {
+          "format": "int32",
+          "type": "integer"
+        }
+      }
+    },
+    "System.Threading.CancellationToken": {
+      "type": "object",
+      "properties": {
+        "isCancellationRequested": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "canBeCanceled": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "waitHandle": {
+          "$ref": "#/definitions/System.Threading.WaitHandle",
+          "readOnly": true
+        }
+      }
+    },
+    "System.Threading.WaitHandle": {
+      "type": "object",
+      "properties": {
+        "handle": {
+          "type": "object"
+        },
+        "safeWaitHandle": {
+          "$ref": "#/definitions/Microsoft.Win32.SafeHandles.SafeWaitHandle"
+        }
+      }
+    },
+    "Microsoft.Win32.SafeHandles.SafeWaitHandle": {
+      "type": "object",
+      "properties": {
+        "isInvalid": {
+          "type": "boolean",
+          "readOnly": true
+        },
+        "isClosed": {
+          "type": "boolean",
+          "readOnly": true
+        }
+      }
+    },
+    "Vintri.Beers.Core.Models.BeerRatingsResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "userRatings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Vintri.Beers.Core.Models.UserRating"
+          }
+        }
+      }
+    },
+    "Vintri.Beers.Core.Models.UserRating": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "format": "email"
+        },
+        "rating": {
+          "format": "int32",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "comments": {
+          "type": "string",
+          "maxLength": 50
+        }
+      },
+      "required": [
+        "username",
+        "rating"
+      ]
+    },
+    "Vintri.Beers.Core.Models.BeerRating": {
+      "type": "object",
+      "properties": {
+        "beerId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "userRating": {
+          "$ref": "#/definitions/Vintri.Beers.Core.Models.UserRating"
+        }
+      }
+    }
+  }
+}

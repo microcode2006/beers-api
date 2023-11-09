@@ -31,4 +31,4 @@ Its just simple file logging with Serilog to log every request, response and any
 
 ## **Get Started**
 To run the web api locally, ensure .net framework 4.8 and IIS Express installed. Run http://localhost:5000/swagger locally to get Swagger UI for local test, and 
-go http://localhost:5000/swagger/docs/v1 to get API specs.
+use http://localhost:5000/swagger.json to explore API.
