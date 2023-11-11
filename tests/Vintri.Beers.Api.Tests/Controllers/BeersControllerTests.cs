@@ -22,7 +22,7 @@ public class BeersControllerTests
         _beersService.GetBeersAsync(Arg.Is<QueryFilter>(x => x.BeerName == beerName), default).Returns(
             Task.FromResult((IReadOnlyList<BeerRatingsResponse>)expectedBeerRatingsResponse));
 
-        var httpActionResult = await _beersController.GetBeersAsync(new QueryFilter { BeerName = beerName }, default);
+        var httpActionResult = await _beersController.GetBeersAsync(new QueryFilter{ BeerName = beerName }, default);
         var result = httpActionResult.ExecuteAsync(default).Result;
 
         result.StatusCode.ShouldBe(HttpStatusCode.OK);

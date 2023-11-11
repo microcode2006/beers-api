@@ -5,9 +5,9 @@ namespace Vintri.Beers.Core.Models
     /// <summary>
     /// Its entity model for json file repository
     /// </summary>
-    public class BeerRatings
+    public record BeerRatings(int Id, List<UserRating> UserRatings)
     {
-        public int Id { get; set; }
-        public List<UserRating>? UserRatings { get; set; }
+        public int Id { get; } = Id;
+        public List<UserRating> UserRatings { get; } = UserRatings;
     }
 }

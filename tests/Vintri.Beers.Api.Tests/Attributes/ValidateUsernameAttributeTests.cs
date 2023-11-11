@@ -8,6 +8,7 @@ namespace Vintri.Beers.Api.Tests.Attributes;
 public class ValidateUsernameAttributeTests
 {
     private readonly ValidateUsernameAttribute _validateUsernameAttribute = new();
+    private readonly Fixture _fixture = new();
 
     [Theory]
     [InlineData("")]
@@ -28,7 +29,7 @@ public class ValidateUsernameAttributeTests
                 Configuration = new HttpConfiguration(),
                 Request = new HttpRequestMessage()
             },
-            ActionArguments = { ["userRating"] = new UserRating { Username = username } },
+            ActionArguments = { ["userRating"] = new UserRating(Username: username, Rating: _fixture.Create<int>()) },
             ActionDescriptor = Substitute.For<HttpActionDescriptor>()
         };
         actionContext.Request.Properties.Add(HttpPropertyKeys.HttpConfigurationKey, new HttpConfiguration());

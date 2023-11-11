@@ -1,6 +1,6 @@
 ﻿namespace Vintri.Beers.Core.Models;
 
-public class PunkClientSettings
+public record PunkClientSettings
 {
-    public string? Endpoint { get; set; }
+    public string Endpoint { get; set; } = string.Empty;
 }

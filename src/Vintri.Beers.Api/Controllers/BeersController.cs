@@ -48,11 +48,7 @@ namespace Vintri.Beers.Api.Controllers
         [Route("{beerId}/ratings")]
         public async Task<IHttpActionResult> AddRatingAsync(int beerId, [FromBody]UserRating userRating, CancellationToken cancellationToken = default)
         {
-            var beerRating = new BeerRating
-            {
-                BeerId = beerId,
-                UserRating = userRating
-            };
+            var beerRating = new BeerRating(beerId, userRating);
             await _beersService.AddRatingAsync(beerRating, cancellationToken).ConfigureAwait(false);
 
             return Created(string.Empty, beerRating);

@@ -1,6 +1,6 @@
 namespace Vintri.Beers.Core.Models;
 
-public class ErrorResult
+public record ErrorResult
 {
     public int StatusCode { get; set; }
     public string? Message { get; set; }

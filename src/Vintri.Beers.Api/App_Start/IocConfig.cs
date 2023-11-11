@@ -7,7 +7,6 @@ using System.Web.Http.Dispatcher;
 using Microsoft.Extensions.DependencyInjection;
 using Vintri.Beers.Api.Controllers;
 using Vintri.Beers.Core.Extensions;
-using Vintri.Beers.Core.Interfaces;
 using Vintri.Beers.Core.Models;
 using Vintri.Beers.Infrastructure.Extensions;
 
@@ -20,19 +19,16 @@ namespace Vintri.Beers.Api
     public static class IocConfig
     {
         /// <summary>
-        /// Return the IBeersLogger instance injected by ExceptionHandlingAttribute constructor
-        /// </summary>
-        public static IBeersLogger BeersLogger { get; private set; }
-
-        /// <summary>
         /// Configure Microsoft DI and register types
         /// </summary>
-        public static void Register()
+        public static IServiceCollection Register()
         {
             var serviceCollection = new ServiceCollection();
 
             RegisterTypes(serviceCollection);
             Configure(serviceCollection);
+
+            return serviceCollection;
         }
 
         private static void RegisterTypes(IServiceCollection serviceCollection)
@@ -53,19 +49,18 @@ namespace Vintri.Beers.Api
             serviceCollection.AddScoped<BeersController>();
             serviceCollection.AddScoped<HealthCheckController>();
 
-            BeersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
         }
 
         private static void Configure(IServiceCollection serviceCollection)
         {
-            var provider = serviceCollection.BuildServiceProvider(
+            var serviceProvider = serviceCollection.BuildServiceProvider(
                 new ServiceProviderOptions {
                     ValidateOnBuild = true,
                     ValidateScopes = true
                 });
 
             GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator),
-                new MsDiHttpControllerActivator(provider));
+                new MsDiHttpControllerActivator(serviceProvider));
         }
 
     }

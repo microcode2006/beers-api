@@ -12,9 +12,10 @@ public class UserRatingValidatorTests
     public void Should_Have_Error_When_UserName_Invalid(string userName)
     {
         var userRating = new UserRating
-        {
-            Username = userName
-        };
+        (
+            Username: userName,
+            Rating: _fixture.Create<int>()
+        );
         var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldHaveValidationErrorFor(userRating => userRating.Username);
     }
@@ -26,9 +27,10 @@ public class UserRatingValidatorTests
     public void Should_Have_Error_When_Rating_Invalid(int rating)
     {
         var userRating = new UserRating
-        {
-            Rating = rating
-        };
+        (
+            Username: _fixture.Create<string>(),
+            Rating: rating
+        );
         var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldHaveValidationErrorFor(userRating => userRating.Rating);
     }
@@ -42,9 +44,10 @@ public class UserRatingValidatorTests
     public void Should_Not_Have_Error_When_Rating_Valid(int rating)
     {
         var userRating = new UserRating
-        {
-            Rating = rating
-        };
+        (
+            Username: _fixture.Create<string>(),
+            Rating: rating
+        );
         var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldNotHaveValidationErrorFor(userRating => userRating.Rating);
     }
@@ -56,9 +59,14 @@ public class UserRatingValidatorTests
     public void Should_Not_Have_Error_When_Comments_Valid(string comments)
     {
         var userRating = new UserRating
+        (
+            Username: _fixture.Create<string>(),
+            Rating: _fixture.Create<int>()
+        )
         {
             Comments = comments
         };
+
         var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldNotHaveValidationErrorFor(userRating => userRating.Comments);
     }
@@ -81,6 +89,10 @@ public class UserRatingValidatorTests
         var chars = _fixture.CreateMany<char>(characterCount).ToArray();
 
         var userRating = new UserRating
+        (
+            Username: _fixture.Create<string>(),
+            Rating: _fixture.Create<int>()
+        )
         {
             Comments = new string(chars)
         };

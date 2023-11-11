@@ -5,11 +5,11 @@ namespace Vintri.Beers.Core.Models
     /// <summary>
     /// Response model for the data returned from GetBeersAsync action
     /// </summary>
-    public class BeerRatingsResponse
+    public record BeerRatingsResponse(int Id, string Name, string Description, List<UserRating> UserRatings)
     {
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public List<UserRating>? UserRatings { get; set; }
+        public int Id { get; } = Id;
+        public string Name { get; } = Name;
+        public string Description { get; } = Description;
+        public List<UserRating> UserRatings { get; } = UserRatings;
     }
 }

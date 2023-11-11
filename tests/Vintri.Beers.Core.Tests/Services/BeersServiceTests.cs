@@ -3,6 +3,7 @@ namespace Vintri.Beers.Core.Tests.Services;
 public class BeersServiceTests
 {
     private readonly BeersService _beersService;
+    private readonly Fixture _fixture = new();
     private readonly IBeerRatingRepository _beerRatingRepository = Substitute.For<IBeerRatingRepository>();
     private readonly IPunkClient _punkClient = Substitute.For<IPunkClient>();
     private readonly IValidator<BeerRating> _beerRatingValidator = Substitute.For<IValidator<BeerRating>>();
@@ -16,7 +17,7 @@ public class BeersServiceTests
     [Fact]
     public async Task AddRatingAsync_Should_Add_Rating()
     {
-        var beerRating = new BeerRating();
+        var beerRating = _fixture.Create<BeerRating>();
         await _beersService.AddRatingAsync(beerRating, default);
 
         beerRating.ShouldSatisfyAllConditions(
@@ -31,77 +32,30 @@ public class BeersServiceTests
     {
         var beers = new List<Beer>
         {
-            new()
-            {
-                Id = 1,
-                Name = "Name",
-                Description = "Description",
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Name2",
-                Description = "Description2",
-            }
+            new(Id: 1, Name: "Name", Description: "Description"),
+            new(Id: 2, Name: "Name2", Description: "Description2")
 
         };
         var beerRatings = new List<BeerRatings>
         {
-            new()
-            {
-                Id = 1,
-                UserRatings = new List<UserRating>
+            new (Id: 1, UserRatings: new List<UserRating>
                 {
-                    new()
-                    {
-                        Username = "test@vintri.ca",
-                        Rating = 1,
-                        Comments = "good",
-                    },
-                    new()
-                    {
-                        Username = "test2@vintri.ca",
-                        Rating = 2,
-                        Comments = "very good",
-                    },
-                }
-            }
-
+                    new (Username: "test@vintri.ca", Rating: 1){ Comments = "good" },
+                    new (Username: "test2@vintri.ca", Rating: 2){ Comments = "very good" },
+                })
         };
 
         var expectedBeerRatingsResponse = new List<BeerRatingsResponse>
         {
-            new()
+            new(Id: 1, Name: "Name", Description: "Description", UserRatings: new List<UserRating>
             {
-                Id = 1,
-                Name = "Name",
-                Description = "Description",
-                UserRatings = new List<UserRating>
-                {
-                    new()
-                    {
-                        Username = "test@vintri.ca",
-                        Rating = 1,
-                        Comments = "good",
-                    },
-                    new()
-                    {
-                        Username = "test2@vintri.ca",
-                        Rating = 2,
-                        Comments = "very good",
-                    },
-                }
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Name2",
-                Description = "Description2",
-                UserRatings = new List<UserRating>()
-            }
+                new(Username: "test@vintri.ca", Rating: 1) { Comments = "good" },
+                new(Username: "test2@vintri.ca", Rating: 2) { Comments = "very good" },
+            }),
+            new(Id: 2, Name: "Name2", Description: "Description2", UserRatings: new List<UserRating>())
         };
 
-        var queryFilter = new QueryFilter();
+        var queryFilter = new QueryFilter{ BeerName = _fixture.Create<string>() };
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
         _beerRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1) && x.Contains(2)), default)
@@ -120,40 +74,19 @@ public class BeersServiceTests
     {
         var beers = new List<Beer>
         {
-            new()
-            {
-                Id = 1,
-                Name = "Name",
-                Description = "Description",
-            }
+            new(Id: 1, Name: "Name", Description: "Description")
         };
         var beerRatings = new List<BeerRatings>
         {
-            new()
+            new (Id: 2, UserRatings: new List<UserRating>
             {
-                Id = 2,
-                UserRatings = new List<UserRating>
-                {
-                    new()
-                    {
-                        Username = "test@vintri.ca",
-                        Rating = 1,
-                        Comments = "good",
-                    }
-                }
-            }
-
+                new (Username: "test@vintri.ca", Rating: 1){ Comments = "good"}
+            })
         };
 
         var expectedBeerRatingsResponse = new List<BeerRatingsResponse>
         {
-            new()
-            {
-                Id = 1,
-                Name = "Name",
-                Description = "Description",
-                UserRatings = new List<UserRating>()
-            }
+            new(Id: 1, Name: "Name", Description: "Description", UserRatings: new List<UserRating>())
         };
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));

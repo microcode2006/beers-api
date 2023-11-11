@@ -56,7 +56,7 @@ namespace Vintri.Beers.Infrastructure
             {
                 case HttpStatusCode.OK:
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return JsonConvert.DeserializeObject<List<Beer>>(responseContent);
+                    return JsonConvert.DeserializeObject<List<Beer>>(responseContent) ?? throw new PunkRequestException(response);
                 case HttpStatusCode.NotFound:
                     return Array.Empty<Beer>();
                 default:

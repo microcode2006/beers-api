@@ -1,10 +1,12 @@
 ﻿using System.Web.Http;
 using System.Web.Http.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
 using Newtonsoft.Json.Serialization;
 using Vintri.Beers.Api.Attributes;
 using Vintri.Beers.Core;
+using Vintri.Beers.Core.Interfaces;
 
 namespace Vintri.Beers.Api
 {
@@ -19,11 +21,13 @@ namespace Vintri.Beers.Api
         /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
         {
-            IocConfig.Register();
+            var serviceCollection = IocConfig.Register();
+            var beersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
+
             RegisterApiVersioning(config);
 
-            config.Filters.Add(new ExceptionHandlingAttribute(IocConfig.BeersLogger));
-            config.Filters.Add(new LogRequestAttribute(IocConfig.BeersLogger));
+            config.Filters.Add(new ExceptionHandlingAttribute(beersLogger));
+            config.Filters.Add(new LogRequestAttribute(beersLogger));
 
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }

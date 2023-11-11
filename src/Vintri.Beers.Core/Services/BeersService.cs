@@ -35,13 +35,12 @@ namespace Vintri.Beers.Core.Services
             var beerIds = beers.Select(x => x.Id).ToList();
             var beerRatings = await _beerRatingRepository.GetAsync(beerIds, cancellationToken).ConfigureAwait(false);
 
-            var beerRatingsResponse = beers.Select(beer => new BeerRatingsResponse()
-            {
-                Id = beer.Id,
-                Name = beer.Name,
-                Description = beer.Description,
-                UserRatings = beerRatings.FirstOrDefault(beerRating => beerRating.Id == beer.Id)?.UserRatings ?? new List<UserRating>()
-            }).ToList();
+            var beerRatingsResponse = beers.Select(beer => new BeerRatingsResponse
+            (
+                Id: beer.Id, Name: beer.Name,
+                Description: beer.Description,
+                UserRatings: beerRatings.FirstOrDefault(beerRating => beerRating.Id == beer.Id)?.UserRatings ?? new List<UserRating>())
+            ).ToList();
 
             return beerRatingsResponse;
         }

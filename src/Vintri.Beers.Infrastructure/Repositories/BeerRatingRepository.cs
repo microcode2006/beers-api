@@ -41,25 +41,18 @@ namespace Vintri.Beers.Infrastructure.Repositories
 
         private async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)
         {
-            if (!File.Exists(DatabaseFile))
+            if (!File.Exists(DatabaseFile) || new FileInfo(DatabaseFile).Length == 0)
             {
                 return new List<BeerRatings>();
             }
 
             using var json = File.OpenRead(DatabaseFile);
 
-            if (json.Length == 0)
-            {
-                return new List<BeerRatings>();
-            }
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var beerRatings = await JsonSerializer.DeserializeAsync<List<BeerRatings>>(json, options, cancellationToken)
+                .ConfigureAwait(false);
 
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            var beerRatings = await JsonSerializer.DeserializeAsync<List<BeerRatings>>(json, options, cancellationToken).ConfigureAwait(false);
-
-            return beerRatings;
+            return beerRatings ?? new List<BeerRatings>();
         }
 
         private void UpdateBeerRatingsList(BeerRating beerRating, List<BeerRatings> beerRatingsList)
@@ -70,13 +63,13 @@ namespace Vintri.Beers.Infrastructure.Repositories
             {
                 beerRatingsList.Add(
                     new BeerRatings
-                    {
-                        Id = beerRating.BeerId,
-                        UserRatings = new List<UserRating>
+                    (
+                        Id: beerRating.BeerId,
+                        UserRatings: new List<UserRating>
                         {
                             beerRating.UserRating
                         }
-                    });
+                    ));
             }
             else
             {
