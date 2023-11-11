@@ -36,7 +36,10 @@ namespace Vintri.Beers.Api
         {
             var constraintResolver = new DefaultInlineConstraintResolver
             {
-                ConstraintMap = {[Constants.ApiVersion] = typeof(ApiVersionRouteConstraint)}
+                ConstraintMap =
+                {
+                    [Constants.ApiVersion] = typeof(ApiVersionRouteConstraint)
+                }
             };
 
             config.MapHttpAttributeRoutes(constraintResolver);

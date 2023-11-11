@@ -31,7 +31,6 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<IBeersLogger, SeriBeerslogger>();
     }
 
-
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy() =>
         HttpPolicyExtensions.HandleTransientHttpError()
             .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
