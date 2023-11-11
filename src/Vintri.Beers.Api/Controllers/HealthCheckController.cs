@@ -12,10 +12,7 @@ namespace Vintri.Beers.Api.Controllers
         private readonly HealthCheckService _healthCheckService;
 
         /// <inheritdoc />
-        public HealthCheckController(HealthCheckService healthCheckService)
-        {
-            _healthCheckService = healthCheckService;
-        }
+        public HealthCheckController(HealthCheckService healthCheckService) => _healthCheckService = healthCheckService;
 
         /// <summary>
         /// Health check

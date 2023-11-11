@@ -14,17 +14,13 @@ namespace Vintri.Beers.Infrastructure.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static void AddPunkClient(this IServiceCollection serviceCollection)
-    {
+    public static void AddPunkClient(this IServiceCollection serviceCollection) =>
         serviceCollection.AddHttpClient<IPunkClient, PunkClient>()
             .SetHandlerLifetime(TimeSpan.FromMinutes(Constants.PunkClientLifetimeInMinutes))
             .AddPolicyHandler(GetRetryPolicy());
-    }
 
-    public static void AddUserRatingRepository(this IServiceCollection serviceCollection)
-    {
+    public static void AddUserRatingRepository(this IServiceCollection serviceCollection) =>
         serviceCollection.AddScoped<IBeerRatingRepository, BeerRatingRepository>();
-    }
 
     public static void AddSerilog(this IServiceCollection serviceCollection)
     {

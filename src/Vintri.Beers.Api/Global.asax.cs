@@ -9,9 +9,6 @@ namespace Vintri.Beers.Api
         /// <summary>
         /// Application entry point to configure api version, register filters and IoC container.
         /// </summary>
-        protected void Application_Start()
-        {
-            GlobalConfiguration.Configure(WebApiConfig.Register);
-        }
+        protected void Application_Start() => GlobalConfiguration.Configure(WebApiConfig.Register);
     }
 }

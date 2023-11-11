@@ -20,10 +20,7 @@ public class ExceptionHandlingAttribute : ExceptionFilterAttribute
     private readonly IBeersLogger _logger;
 
     /// <inheritdoc />
-    public ExceptionHandlingAttribute(IBeersLogger logger)
-    {
-        _logger = logger;
-    }
+    public ExceptionHandlingAttribute(IBeersLogger logger) => _logger = logger;
 
     /// <inheritdoc />
     public override void OnException(HttpActionExecutedContext actionExecutedContext)

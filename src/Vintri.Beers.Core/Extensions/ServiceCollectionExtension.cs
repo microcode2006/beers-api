@@ -16,10 +16,6 @@ public static class ServiceCollectionExtension
         serviceCollection.AddScoped<IValidator<QueryFilter>, QueryFilterValidator>();
     }
 
-    public static void AddBeersService(this IServiceCollection serviceCollection)
-    {
+    public static void AddBeersService(this IServiceCollection serviceCollection) =>
         serviceCollection.AddScoped<IBeersService, BeersService>();
-    }
-
-
 }

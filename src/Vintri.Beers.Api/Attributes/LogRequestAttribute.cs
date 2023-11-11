@@ -11,10 +11,7 @@ public class LogRequestAttribute : ActionFilterAttribute
     private readonly IBeersLogger _logger;
 
     /// <inheritdoc />
-    public LogRequestAttribute(IBeersLogger logger)
-    {
-        _logger = logger;
-    }
+    public LogRequestAttribute(IBeersLogger logger) => _logger = logger;
 
     /// <inheritdoc />
     public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
