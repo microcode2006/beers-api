@@ -32,3 +32,12 @@ Its just simple file logging with Serilog to log every request, response and any
 ## **Get Started**
 To run the web api locally, ensure .net framework 4.8 and IIS Express installed. Run http://localhost:5000/swagger locally to get Swagger UI for local test, and 
 use http://localhost:5000/swagger.json to explore API.
+
+
+## **Notes**
+
+1. All sync calls follow with ConfigureAwait(false) to avoid possible deadlock issues. https://blog.stephencleary.com/2012/02/async-and-await.html#avoiding-context
+2. Try OptionsPattern to access configuration settings: https://learn.microsoft.com/en-us/dotnet/core/extensions/options 
+3. Use HttpClient for any external API calls and ensure it handles transient issues properly with Polly.
+4. Update .infrastructure/vintri-beers-api.yaml or .infrastructure/vintri-beers-api.json for API specs.
+5. Coding conventions: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names, https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions

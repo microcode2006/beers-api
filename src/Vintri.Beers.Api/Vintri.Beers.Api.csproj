@@ -216,7 +216,6 @@
     <ItemGroup>
         <Compile Include="App_Start\IocConfig.cs" />
         <Compile Include="App_Start\WebApiConfig.cs" />
-        <Compile Include="Attributes\CompressResponseAttribute.cs" />
         <Compile Include="Attributes\ExceptionHandlingAttribute.cs" />
         <Compile Include="Attributes\LogRequestAttribute.cs" />
         <Compile Include="Attributes\ValidateUsernameAttribute.cs" />
@@ -229,7 +228,6 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="Global.asax" />
-        <Content Include="swagger.json" />
         <Content Include="Web.config" />
         <Content Include="Web.Debug.config">
             <DependentUpon>Web.config</DependentUpon>
@@ -240,6 +238,7 @@
     </ItemGroup>
     <ItemGroup>
         <None Include="packages.config" />
+        <None Include="Web.Dev.config" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Vintri.Beers.Core\Vintri.Beers.Core.csproj">

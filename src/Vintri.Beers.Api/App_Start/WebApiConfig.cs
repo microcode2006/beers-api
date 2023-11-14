@@ -1,7 +1,8 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Reflection;
+using System.Web.Http;
 using System.Web.Http.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.Application;
@@ -45,16 +46,12 @@ namespace Vintri.Beers.Api
             };
 
             config.MapHttpAttributeRoutes(constraintResolver);
-            config.AddApiVersioning(o =>
-            {
-                o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
-            });
+            config.AddApiVersioning();
         }
 
         private static void RegisterSwagger(HttpConfiguration config)
         {
-            var xmlCommentsFilePath = $@"{System.AppDomain.CurrentDomain.BaseDirectory}\bin\Vintri.Beers.Api.XML";
+            var xmlCommentsFilePath = $@"{AppContext.BaseDirectory}\bin\{Assembly.GetExecutingAssembly().GetName().Name}.XML";
 
             config.EnableSwagger(c =>
             {

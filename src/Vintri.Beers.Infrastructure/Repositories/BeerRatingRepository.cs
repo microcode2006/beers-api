@@ -46,6 +46,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
                 return new List<BeerRatings>();
             }
 
+            //File.OpenRead has a default FileShare value of Read to allow subsequent opening of the file for reading
             using var json = File.OpenRead(DatabaseFile);
 
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -79,6 +80,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
 
         private async Task SaveBeerRatingsToFileAsync(List<BeerRatings> beerRatingsList, CancellationToken cancellationToken)
         {
+            // File.Create has a default FileShare value of None, no other process can access the created file until the file is closed
             using var databaseFileStream = File.Create(DatabaseFile);
             await JsonSerializer.SerializeAsync(utf8Json: databaseFileStream, value: beerRatingsList,
                     cancellationToken: cancellationToken).ConfigureAwait(false);

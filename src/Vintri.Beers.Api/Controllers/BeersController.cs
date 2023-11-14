@@ -11,7 +11,6 @@ namespace Vintri.Beers.Api.Controllers
 {
     /// <inheritdoc />
     [ApiVersion("1")]
-    [CompressResponse]
     [RoutePrefix($"api/v{{version:{Constants.ApiVersion}}}/beers")]
     public class BeersController : ApiController
     {
