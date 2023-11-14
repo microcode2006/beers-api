@@ -74,8 +74,7 @@ namespace Vintri.Beers.Api
             _provider = provider;
         }
 
-        public IHttpController Create(
-            HttpRequestMessage request, HttpControllerDescriptor descriptor, Type type)
+        public IHttpController Create(HttpRequestMessage request, HttpControllerDescriptor descriptor, Type type)
         {
             var scope = _provider.CreateScope();
             request.RegisterForDispose(scope);

@@ -30,35 +30,31 @@ public class BeersServiceTests
     [Fact]
     public async Task GetBeersAsync_Should_Return_BeerRatingsResponse()
     {
+        var userRatings = _fixture.Create<List<UserRating>>();
+        var beer = (name1: _fixture.Create<string>(), name2: _fixture.Create<string>(),
+            description1: _fixture.Create<string>(), description2: _fixture.Create<string>());
+
         var beers = new List<Beer>
         {
-            new(Id: 1, Name: "Name", Description: "Description"),
-            new(Id: 2, Name: "Name2", Description: "Description2")
+            new(Id: 1, Name: beer.name1, Description: beer.description1),
+            new(Id: 2, Name: beer.name2, Description: beer.description2)
 
         };
         var beerRatings = new List<BeerRatings>
         {
-            new (Id: 1, UserRatings: new List<UserRating>
-                {
-                    new (Username: "test@vintri.ca", Rating: 1){ Comments = "good" },
-                    new (Username: "test2@vintri.ca", Rating: 2){ Comments = "very good" },
-                })
+            new (Id: 1, UserRatings: userRatings)
         };
 
         var expectedBeerRatingsResponse = new List<BeerRatingsResponse>
         {
-            new(Id: 1, Name: "Name", Description: "Description", UserRatings: new List<UserRating>
-            {
-                new(Username: "test@vintri.ca", Rating: 1) { Comments = "good" },
-                new(Username: "test2@vintri.ca", Rating: 2) { Comments = "very good" },
-            }),
-            new(Id: 2, Name: "Name2", Description: "Description2", UserRatings: new List<UserRating>())
+            new(Id: 1, Name: beer.name1, Description: beer.description1, UserRatings: userRatings),
+            new(Id: 2, Name: beer.name2, Description: beer.description2, UserRatings: new List<UserRating>())
         };
 
         var queryFilter = new QueryFilter{ BeerName = _fixture.Create<string>() };
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _beerRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1) && x.Contains(2)), default)
+        _beerRatingRepository.GetAsync(Arg.Is<HashSet<int>>(x => x.Contains(1) && x.Contains(2)), default)
             .Returns(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(queryFilter, default);
@@ -72,25 +68,24 @@ public class BeersServiceTests
     [Fact]
     public async Task GetBeersAsync_Should_Return_Empty_BeerRatingsResponse_When_No_Matched_BeerIds()
     {
+        var beer = (name: _fixture.Create<string>(), description: _fixture.Create<string>());
+
         var beers = new List<Beer>
         {
-            new(Id: 1, Name: "Name", Description: "Description")
+            new(Id: 1, Name: beer.name, Description: beer.description)
         };
         var beerRatings = new List<BeerRatings>
         {
-            new (Id: 2, UserRatings: new List<UserRating>
-            {
-                new (Username: "test@vintri.ca", Rating: 1){ Comments = "good"}
-            })
+            new(Id: 2, UserRatings: _fixture.Create<List<UserRating>>())
         };
 
         var expectedBeerRatingsResponse = new List<BeerRatingsResponse>
         {
-            new(Id: 1, Name: "Name", Description: "Description", UserRatings: new List<UserRating>())
+            new(Id: 1, Name: beer.name, Description: beer.description, UserRatings: new List<UserRating>())
         };
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _beerRatingRepository.GetAsync(Arg.Is<List<int>>(x => x.Contains(1)), default)
+        _beerRatingRepository.GetAsync(Arg.Is<HashSet<int>>(x => x.Contains(1)), default)
             .Returns(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(default!, default);
@@ -106,8 +101,7 @@ public class BeersServiceTests
         var beerRatings = new List<BeerRatings>();
 
         _punkClient.GetBeersAsync(default, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<Beer>)beers));
-        _beerRatingRepository.GetAsync(default!, default)
-            .ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
+        _beerRatingRepository.GetAsync(default!, default).ReturnsForAnyArgs(Task.FromResult((IReadOnlyList<BeerRatings>)beerRatings));
 
         var actualResult = await _beersService.GetBeersAsync(default!, default);
 

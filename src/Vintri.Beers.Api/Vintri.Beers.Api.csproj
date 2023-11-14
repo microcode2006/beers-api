@@ -215,8 +215,8 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="App_Start\IocConfig.cs" />
-        <Compile Include="App_Start\SwaggerConfig.cs" />
         <Compile Include="App_Start\WebApiConfig.cs" />
+        <Compile Include="Attributes\CompressResponseAttribute.cs" />
         <Compile Include="Attributes\ExceptionHandlingAttribute.cs" />
         <Compile Include="Attributes\LogRequestAttribute.cs" />
         <Compile Include="Attributes\ValidateUsernameAttribute.cs" />

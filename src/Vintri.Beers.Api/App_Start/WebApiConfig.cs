@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
 using Newtonsoft.Json.Serialization;
+using Swashbuckle.Application;
 using Vintri.Beers.Api.Attributes;
 using Vintri.Beers.Core;
 using Vintri.Beers.Core.Interfaces;
@@ -16,7 +17,7 @@ namespace Vintri.Beers.Api
     public static class WebApiConfig
     {
         /// <summary>
-        /// Register IoC container, API version, logging and exception handling filter
+        /// Register IoC container, API version, swagger, logging and exception handling filter
         /// </summary>
         /// <param name="config"></param>
         public static void Register(HttpConfiguration config)
@@ -25,6 +26,7 @@ namespace Vintri.Beers.Api
             var beersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
 
             RegisterApiVersioning(config);
+            RegisterSwagger(config);
 
             config.Filters.Add(new ExceptionHandlingAttribute(beersLogger));
             config.Filters.Add(new LogRequestAttribute(beersLogger));
@@ -48,6 +50,18 @@ namespace Vintri.Beers.Api
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
+        }
+
+        private static void RegisterSwagger(HttpConfiguration config)
+        {
+            var xmlCommentsFilePath = $@"{System.AppDomain.CurrentDomain.BaseDirectory}\bin\Vintri.Beers.Api.XML";
+
+            config.EnableSwagger(c =>
+            {
+                c.SingleApiVersion("v1", "Vintri Beers API");
+                c.UseFullTypeNameInSchemaIds();
+                c.IncludeXmlComments(xmlCommentsFilePath);
+            }).EnableSwaggerUi();
         }
     }
 }

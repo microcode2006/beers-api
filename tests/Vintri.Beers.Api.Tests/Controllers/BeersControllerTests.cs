@@ -22,7 +22,7 @@ public class BeersControllerTests
         _beersService.GetBeersAsync(Arg.Is<QueryFilter>(x => x.BeerName == beerName), default).Returns(
             Task.FromResult((IReadOnlyList<BeerRatingsResponse>)expectedBeerRatingsResponse));
 
-        var httpActionResult = await _beersController.GetBeersAsync(new QueryFilter{ BeerName = beerName }, default);
+        var httpActionResult = await _beersController.GetBeersAsync(new QueryFilter{ BeerName = beerName });
         var result = httpActionResult.ExecuteAsync(default).Result;
 
         result.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -37,7 +37,7 @@ public class BeersControllerTests
         var expectedUserRating = _fixture.Create<UserRating>();
         var beerId = _fixture.Create<int>();
 
-        var httpActionResult = await _beersController.AddRatingAsync(beerId, expectedUserRating, default);
+        var httpActionResult = await _beersController.AddRatingAsync(beerId, expectedUserRating);
         var result = httpActionResult.ExecuteAsync(default).Result;
 
         await _beersService.Received(1).AddRatingAsync(Arg.Is<BeerRating>(x => x.BeerId == beerId && x.UserRating == expectedUserRating), default);

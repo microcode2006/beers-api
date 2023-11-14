@@ -58,14 +58,8 @@ public class UserRatingValidatorTests
     [InlineData(" ")]
     public void Should_Not_Have_Error_When_Comments_Valid(string comments)
     {
-        var userRating = new UserRating
-        (
-            Username: _fixture.Create<string>(),
-            Rating: _fixture.Create<int>()
-        )
-        {
-            Comments = comments
-        };
+        var userRating = _fixture.Create<UserRating>();
+        userRating.Comments = comments;
 
         var result = _userRatingValidator.TestValidate(userRating);
         result.ShouldNotHaveValidationErrorFor(userRating => userRating.Comments);
@@ -88,14 +82,9 @@ public class UserRatingValidatorTests
 
         var chars = _fixture.CreateMany<char>(characterCount).ToArray();
 
-        var userRating = new UserRating
-        (
-            Username: _fixture.Create<string>(),
-            Rating: _fixture.Create<int>()
-        )
-        {
-            Comments = new string(chars)
-        };
+        var userRating = _fixture.Create<UserRating>();
+        userRating.Comments = new string(chars);
+
         var result = _userRatingValidator.TestValidate(userRating);
 
         assertion(result);

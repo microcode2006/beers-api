@@ -26,7 +26,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
             await SaveBeerRatingsToFileAsync(beerRatingsList, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<IReadOnlyList<BeerRatings>> GetAsync(List<int> beerIds, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<BeerRatings>> GetAsync(HashSet<int> beerIds, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -36,7 +36,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
             }
 
             var beerRatingsList = await LoadBeerRatingsFromFileAsync(cancellationToken).ConfigureAwait(false);
-            return beerRatingsList.Where(x => beerIds.Contains(x.Id)).ToList();
+            return beerRatingsList.Where(beerRatings => beerIds.Contains(beerRatings.Id)).ToList();
         }
 
         private async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)

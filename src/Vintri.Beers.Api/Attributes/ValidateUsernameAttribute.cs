@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using Vintri.Beers.Core.Exceptions;
@@ -7,6 +8,7 @@ using Vintri.Beers.Core.Models;
 namespace Vintri.Beers.Api.Attributes
 {
     /// <inheritdoc />
+    [AttributeUsage(AttributeTargets.Method)]
     public class ValidateUsernameAttribute : ActionFilterAttribute
     {
         /// <summary>

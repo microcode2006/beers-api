@@ -57,9 +57,7 @@
             "type": "integer",
             "format": "int32",
             "default": 5,
-            "minimum": 1,
-            "maximum": 25,
-            "description": "number of records per page"
+            "description": "number of records per page, maximum 25"
           }
         ],
         "responses": {
@@ -195,22 +193,6 @@
     }
   },
   "definitions": {
-    "Vintri.Beers.Core.Models.QueryFilter": {
-      "type": "object",
-      "properties": {
-        "beerName": {
-          "type": "string"
-        },
-        "page": {
-          "format": "int32",
-          "type": "integer"
-        },
-        "perPage": {
-          "format": "int32",
-          "type": "integer"
-        }
-      }
-    },
     "System.Threading.CancellationToken": {
       "type": "object",
       "properties": {

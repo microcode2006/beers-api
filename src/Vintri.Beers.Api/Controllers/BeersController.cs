@@ -11,16 +11,14 @@ namespace Vintri.Beers.Api.Controllers
 {
     /// <inheritdoc />
     [ApiVersion("1")]
+    [CompressResponse]
     [RoutePrefix($"api/v{{version:{Constants.ApiVersion}}}/beers")]
     public class BeersController : ApiController
     {
         private readonly IBeersService _beersService;
 
         /// <inheritdoc />
-        public BeersController(IBeersService beersService)
-        {
-            _beersService = beersService;
-        }
+        public BeersController(IBeersService beersService) => _beersService = beersService;
 
         /// <summary>
         /// Get all beers that match the beerName and paging query string

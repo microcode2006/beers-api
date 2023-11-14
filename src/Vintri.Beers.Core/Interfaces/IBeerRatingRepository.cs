@@ -24,6 +24,6 @@ namespace Vintri.Beers.Core.Interfaces
         /// <param name="beerIds">A list of beer ids</param>
         /// <param name="cancellationToken"></param>
         /// <returns>A list of beer ratings</returns>
-        Task<IReadOnlyList<BeerRatings>> GetAsync(List<int> beerIds, CancellationToken cancellationToken);
+        Task<IReadOnlyList<BeerRatings>> GetAsync(HashSet<int> beerIds, CancellationToken cancellationToken);
     }
 }

@@ -32,12 +32,13 @@ namespace Vintri.Beers.Core.Services
             await _queryFilterValidator.ValidateAndThrowAsync(queryFilter, cancellationToken).ConfigureAwait(false);
 
             var beers = await _punkClient.GetBeersAsync(queryFilter, cancellationToken).ConfigureAwait(false);
-            var beerIds = beers.Select(x => x.Id).ToList();
+            var beerIds = beers.Select(x => x.Id).ToHashSet();
             var beerRatings = await _beerRatingRepository.GetAsync(beerIds, cancellationToken).ConfigureAwait(false);
 
             var beerRatingsResponse = beers.Select(beer => new BeerRatingsResponse
             (
-                Id: beer.Id, Name: beer.Name,
+                Id: beer.Id,
+                Name: beer.Name,
                 Description: beer.Description,
                 UserRatings: beerRatings.FirstOrDefault(beerRating => beerRating.Id == beer.Id)?.UserRatings ?? new List<UserRating>())
             ).ToList();

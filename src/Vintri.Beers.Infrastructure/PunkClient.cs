@@ -52,12 +52,12 @@ namespace Vintri.Beers.Infrastructure
 
         private async Task<IReadOnlyList<Beer>> GetBeersFromResponseAsync(HttpResponseMessage response)
         {
-            switch (response.StatusCode)
+            switch (response)
             {
-                case HttpStatusCode.OK:
+                case { StatusCode: HttpStatusCode.OK }:
                     var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return JsonConvert.DeserializeObject<List<Beer>>(responseContent) ?? throw new PunkRequestException(response);
-                case HttpStatusCode.NotFound:
+                case { StatusCode: HttpStatusCode.NotFound }:
                     return Array.Empty<Beer>();
                 default:
                     throw new PunkRequestException(response);
