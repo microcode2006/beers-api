@@ -40,7 +40,7 @@ namespace Vintri.Beers.Infrastructure
             return beers;
         }
 
-        private NameValueCollection GetQueryString(QueryFilter queryFilter)
+        private static NameValueCollection GetQueryString(QueryFilter queryFilter)
         {
             var queryStrings = HttpUtility.ParseQueryString(string.Empty);
             queryStrings["beer_name"] = queryFilter.BeerName;
@@ -50,7 +50,7 @@ namespace Vintri.Beers.Infrastructure
             return queryStrings;
         }
 
-        private async Task<IReadOnlyList<Beer>> GetBeersFromResponseAsync(HttpResponseMessage response)
+        private static async Task<IReadOnlyList<Beer>> GetBeersFromResponseAsync(HttpResponseMessage response)
         {
             switch (response)
             {

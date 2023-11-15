@@ -1,4 +1,6 @@
-﻿using System.Web.Http.Filters;
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Http.Filters;
 using Vintri.Beers.Core.Extensions;
 using Vintri.Beers.Core.Interfaces;
 
@@ -22,7 +24,10 @@ public class ExceptionHandlingAttribute : ExceptionFilterAttribute
         _logger.LogException(exception,
             $"An exception occurred from request: {actionExecutedContext.Request.Method} {actionExecutedContext.Request.RequestUri}");
 
-        actionExecutedContext.Response = exception.ToHttpResponseMessage();
+        if (exception is not (TaskCanceledException or OperationCanceledException))
+        {
+            actionExecutedContext.Response = exception.ToHttpResponseMessage();
+        }
     }
 
 }

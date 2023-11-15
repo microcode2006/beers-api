@@ -39,7 +39,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
             return beerRatingsList.Where(beerRatings => beerIds.Contains(beerRatings.Id)).ToList();
         }
 
-        private async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)
+        private static async Task<List<BeerRatings>> LoadBeerRatingsFromFileAsync(CancellationToken cancellationToken)
         {
             if (!File.Exists(DatabaseFile) || new FileInfo(DatabaseFile).Length == 0)
             {
@@ -56,7 +56,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
             return beerRatings ?? new List<BeerRatings>();
         }
 
-        private void UpdateBeerRatingsList(BeerRating beerRating, List<BeerRatings> beerRatingsList)
+        private static void UpdateBeerRatingsList(BeerRating beerRating, List<BeerRatings> beerRatingsList)
         {
             var existingBeerRating = beerRatingsList.FirstOrDefault(x => x.Id == beerRating.BeerId);
 
@@ -78,7 +78,7 @@ namespace Vintri.Beers.Infrastructure.Repositories
             }
         }
 
-        private async Task SaveBeerRatingsToFileAsync(List<BeerRatings> beerRatingsList, CancellationToken cancellationToken)
+        private static async Task SaveBeerRatingsToFileAsync(List<BeerRatings> beerRatingsList, CancellationToken cancellationToken)
         {
             // File.Create has a default FileShare value of None, no other process can access the created file until the file is closed
             using var databaseFileStream = File.Create(DatabaseFile);

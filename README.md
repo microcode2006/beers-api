@@ -34,10 +34,12 @@ To run the web api locally, ensure .net framework 4.8 and IIS Express installed.
 use http://localhost:5000/swagger.json to explore API.
 
 
-## **Notes**
+## **Best Practice**
 
 1. All sync calls follow with ConfigureAwait(false) to avoid possible deadlock issues. https://blog.stephencleary.com/2012/02/async-and-await.html#avoiding-context
 2. Try OptionsPattern to access configuration settings: https://learn.microsoft.com/en-us/dotnet/core/extensions/options 
 3. Use HttpClient for any external API calls and ensure it handles transient issues properly with Polly.
-4. Update .infrastructure/vintri-beers-api.yaml or .infrastructure/vintri-beers-api.json for API specs.
-5. Coding conventions: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names, https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
+4. Use ./infrastructure folder for any Infrastructure as Code files, like sql database dacpac, Azure ARM template, Terraform scripts etc. The file vintri-beers-api.yaml/vintri-beers-api.json saved here for API specs.
+5. Use ./pipeline folder for any CI/CD files, like how to build project, unit test etc.
+6. Create web config file for each environment to transform any required app settings properly.
+7. Coding conventions: https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names, https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions

@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Web.Http;
 using System.Web.Http.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Web.Http;
 using Microsoft.Web.Http.Routing;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.Application;
@@ -26,8 +27,9 @@ namespace Vintri.Beers.Api
             var serviceCollection = IocConfig.Register();
             var beersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
 
-            RegisterApiVersioning(config);
             RegisterSwagger(config);
+            RegisterApiVersioning(config);
+
 
             config.Filters.Add(new ExceptionHandlingAttribute(beersLogger));
             config.Filters.Add(new LogRequestAttribute(beersLogger));
@@ -46,6 +48,11 @@ namespace Vintri.Beers.Api
             };
 
             config.MapHttpAttributeRoutes(constraintResolver);
+            config.AddApiVersioning(o =>
+            {
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
             config.AddApiVersioning();
         }
 

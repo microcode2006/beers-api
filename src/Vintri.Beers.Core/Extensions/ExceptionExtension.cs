@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using FluentValidation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -19,7 +18,6 @@ public static class ExceptionExtension
         exception switch
         {
             ValidationException or InvalidUsernameException => HttpStatusCode.BadRequest,
-            TaskCanceledException or OperationCanceledException => HttpStatusCode.RequestTimeout,
             _ => HttpStatusCode.InternalServerError,
         };
 

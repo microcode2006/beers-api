@@ -3,7 +3,7 @@ using Vintri.Beers.Core.Interfaces;
 
 namespace Vintri.Beers.Infrastructure.Loggers;
 
-public class SeriBeerslogger : IBeersLogger
+internal class SeriBeerslogger : IBeersLogger
 {
     private readonly Serilog.ILogger _logger;
 
