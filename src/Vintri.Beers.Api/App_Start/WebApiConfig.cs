@@ -11,61 +11,60 @@ using Vintri.Beers.Api.Attributes;
 using Vintri.Beers.Core;
 using Vintri.Beers.Core.Interfaces;
 
-namespace Vintri.Beers.Api
+namespace Vintri.Beers.Api;
+
+/// <summary>
+/// Configure Web Api
+/// </summary>
+public static class WebApiConfig
 {
     /// <summary>
-    /// Configure Web Api
+    /// Register IoC container, API version, swagger, logging and exception handling filter
     /// </summary>
-    public static class WebApiConfig
+    /// <param name="config"></param>
+    public static void Register(HttpConfiguration config)
     {
-        /// <summary>
-        /// Register IoC container, API version, swagger, logging and exception handling filter
-        /// </summary>
-        /// <param name="config"></param>
-        public static void Register(HttpConfiguration config)
+        var serviceCollection = IocConfig.Register();
+        var beersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
+
+        RegisterSwagger(config);
+        RegisterApiVersioning(config);
+
+
+        config.Filters.Add(new ExceptionHandlingAttribute(beersLogger));
+        config.Filters.Add(new LogRequestAttribute(beersLogger));
+
+        config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+    }
+
+    private static void RegisterApiVersioning(HttpConfiguration config)
+    {
+        var constraintResolver = new DefaultInlineConstraintResolver
         {
-            var serviceCollection = IocConfig.Register();
-            var beersLogger = serviceCollection.BuildServiceProvider().GetRequiredService<IBeersLogger>();
+            ConstraintMap =
+            {
+                [Constants.ApiVersion] = typeof(ApiVersionRouteConstraint)
+            }
+        };
 
-            RegisterSwagger(config);
-            RegisterApiVersioning(config);
-
-
-            config.Filters.Add(new ExceptionHandlingAttribute(beersLogger));
-            config.Filters.Add(new LogRequestAttribute(beersLogger));
-
-            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-        }
-
-        private static void RegisterApiVersioning(HttpConfiguration config)
+        config.MapHttpAttributeRoutes(constraintResolver);
+        config.AddApiVersioning(o =>
         {
-            var constraintResolver = new DefaultInlineConstraintResolver
-            {
-                ConstraintMap =
-                {
-                    [Constants.ApiVersion] = typeof(ApiVersionRouteConstraint)
-                }
-            };
+            o.AssumeDefaultVersionWhenUnspecified = true;
+            o.DefaultApiVersion = new ApiVersion(1, 0);
+        });
+        config.AddApiVersioning();
+    }
 
-            config.MapHttpAttributeRoutes(constraintResolver);
-            config.AddApiVersioning(o =>
-            {
-                o.AssumeDefaultVersionWhenUnspecified = true;
-                o.DefaultApiVersion = new ApiVersion(1, 0);
-            });
-            config.AddApiVersioning();
-        }
+    private static void RegisterSwagger(HttpConfiguration config)
+    {
+        var xmlCommentsFilePath = $@"{AppContext.BaseDirectory}\bin\{Assembly.GetExecutingAssembly().GetName().Name}.XML";
 
-        private static void RegisterSwagger(HttpConfiguration config)
+        config.EnableSwagger(c =>
         {
-            var xmlCommentsFilePath = $@"{AppContext.BaseDirectory}\bin\{Assembly.GetExecutingAssembly().GetName().Name}.XML";
-
-            config.EnableSwagger(c =>
-            {
-                c.SingleApiVersion("v1", "Vintri Beers API");
-                c.UseFullTypeNameInSchemaIds();
-                c.IncludeXmlComments(xmlCommentsFilePath);
-            }).EnableSwaggerUi();
-        }
+            c.SingleApiVersion("v1", "Vintri Beers API");
+            c.UseFullTypeNameInSchemaIds();
+            c.IncludeXmlComments(xmlCommentsFilePath);
+        }).EnableSwaggerUi();
     }
 }

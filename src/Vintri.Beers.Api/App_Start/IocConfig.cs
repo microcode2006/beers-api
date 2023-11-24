@@ -10,75 +10,74 @@ using Vintri.Beers.Core.Extensions;
 using Vintri.Beers.Core.Models;
 using Vintri.Beers.Infrastructure.Extensions;
 
-namespace Vintri.Beers.Api
+namespace Vintri.Beers.Api;
+
+/// <summary>
+/// Configure Microsoft DI in ASP.NET 4.6.1 and up:
+/// https://stackoverflow.com/questions/68861721/integrating-microsoft-extensions-dependencyinjection-in-asp-net-4-6-1-project
+/// </summary>
+public static class IocConfig
 {
     /// <summary>
-    /// Configure Microsoft DI in ASP.NET 4.6.1 and up:
-    /// https://stackoverflow.com/questions/68861721/integrating-microsoft-extensions-dependencyinjection-in-asp-net-4-6-1-project
+    /// Configure Microsoft DI and register types
     /// </summary>
-    public static class IocConfig
+    public static IServiceCollection Register()
     {
-        /// <summary>
-        /// Configure Microsoft DI and register types
-        /// </summary>
-        public static IServiceCollection Register()
-        {
-            var serviceCollection = new ServiceCollection();
+        var serviceCollection = new ServiceCollection();
 
-            RegisterTypes(serviceCollection);
-            Configure(serviceCollection);
+        RegisterTypes(serviceCollection);
+        Configure(serviceCollection);
 
-            return serviceCollection;
-        }
+        return serviceCollection;
+    }
 
-        private static void RegisterTypes(IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddOptions<PunkClientSettings>()
-                .Configure(opts => opts.Endpoint = ConfigurationManager.AppSettings["PunkApiEndpoint"])
-                .Validate(opts => !string.IsNullOrWhiteSpace(opts.Endpoint));
+    private static void RegisterTypes(IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddOptions<PunkClientSettings>()
+            .Configure(opts => opts.Endpoint = ConfigurationManager.AppSettings["PunkApiEndpoint"])
+            .Validate(opts => !string.IsNullOrWhiteSpace(opts.Endpoint));
 
-            serviceCollection.AddSerilog();
+        serviceCollection.AddSerilog();
 
-            serviceCollection.AddValidators();
-            serviceCollection.AddPunkClient();
-            serviceCollection.AddUserRatingRepository();
-            serviceCollection.AddBeersService();
+        serviceCollection.AddValidators();
+        serviceCollection.AddPunkClient();
+        serviceCollection.AddUserRatingRepository();
+        serviceCollection.AddBeersService();
 
-            serviceCollection.AddHealthChecks();
+        serviceCollection.AddHealthChecks();
 
-            serviceCollection.AddScoped<BeersController>();
-            serviceCollection.AddScoped<HealthCheckController>();
-
-        }
-
-        private static void Configure(IServiceCollection serviceCollection)
-        {
-            var serviceProvider = serviceCollection.BuildServiceProvider(
-                new ServiceProviderOptions {
-                    ValidateOnBuild = true,
-                    ValidateScopes = true
-                });
-
-            GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator),
-                new MsDiHttpControllerActivator(serviceProvider));
-        }
+        serviceCollection.AddScoped<BeersController>();
+        serviceCollection.AddScoped<HealthCheckController>();
 
     }
 
-    internal class MsDiHttpControllerActivator : IHttpControllerActivator
+    private static void Configure(IServiceCollection serviceCollection)
     {
-        private readonly ServiceProvider _provider;
+        var serviceProvider = serviceCollection.BuildServiceProvider(
+            new ServiceProviderOptions {
+                ValidateOnBuild = true,
+                ValidateScopes = true
+            });
 
-        public MsDiHttpControllerActivator(ServiceProvider provider)
-        {
-            _provider = provider;
-        }
+        GlobalConfiguration.Configuration.Services.Replace(typeof(IHttpControllerActivator),
+            new MsDiHttpControllerActivator(serviceProvider));
+    }
 
-        public IHttpController Create(HttpRequestMessage request, HttpControllerDescriptor descriptor, Type type)
-        {
-            var scope = _provider.CreateScope();
-            request.RegisterForDispose(scope);
-            return (IHttpController)scope.ServiceProvider.GetRequiredService(type);
-        }
+}
+
+internal class MsDiHttpControllerActivator : IHttpControllerActivator
+{
+    private readonly ServiceProvider _provider;
+
+    public MsDiHttpControllerActivator(ServiceProvider provider)
+    {
+        _provider = provider;
+    }
+
+    public IHttpController Create(HttpRequestMessage request, HttpControllerDescriptor descriptor, Type type)
+    {
+        var scope = _provider.CreateScope();
+        request.RegisterForDispose(scope);
+        return (IHttpController)scope.ServiceProvider.GetRequiredService(type);
     }
 }
